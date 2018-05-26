@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/BobLeBuildeur/nonce-next#readme",
   "dependencies": {
-    "jasmine": "^3.1.0"
+    "jasmine": "^3.1.0",
+    "nonce": "^1.0.4"
   }
 }

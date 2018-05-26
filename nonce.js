@@ -1,7 +1,7 @@
+let n = require('nonce')();
 
-class Nonce {
-
-}
-
-
-module.exports = Nonce;
+module.exports = {
+  generate: function() {
+    return n();
+  }
+};

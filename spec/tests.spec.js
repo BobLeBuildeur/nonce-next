@@ -4,7 +4,20 @@ let nonce = require('../nonce');
 describe('Nonce-next', () => {
 
 
-  // it ('should generate nonces when requested', () => {});
+  it ('should generate nonces when requested', () => {
+    let nonce1 = nonce2 = undefined;
+
+    nonce1 =  nonce.generate();
+    nonce2 = nonce.generate();
+
+    expect(nonce1).toBeDefined();
+    expect(nonce2).toBeDefined();
+
+    expect(nonce1).toMatch(/\d{15}/);
+    expect(nonce2).toMatch(/\d{15}/);
+
+    expect(nonce1).not.toEqual(nonce2);
+  });
 
   // it ('should compare nonces', () => {});
 
