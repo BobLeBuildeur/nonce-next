@@ -1,0 +1,22 @@
+{
+  "name": "nonce-next",
+  "version": "0.0.0",
+  "description": "",
+  "main": "nonce.js",
+  "scripts": {
+    "test": "node node_modules/jasmine/bin/jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BobLeBuildeur/nonce-next.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BobLeBuildeur/nonce-next/issues"
+  },
+  "homepage": "https://github.com/BobLeBuildeur/nonce-next#readme",
+  "dependencies": {
+    "jasmine": "^3.1.0"
+  }
+}
