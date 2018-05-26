@@ -20,5 +20,12 @@ module.exports = {
     let valid = !!cache.get(nonce);
     if (valid) { cache.del(nonce); }
     return valid;
+  },
+
+  remove: function(nonce) {
+    let valid = !!cache.get(nonce);
+    if (!valid) { return false };
+    cache.del(nonce);
+    return nonce;
   }
 };

@@ -48,7 +48,18 @@ describe('Nonce-next', () => {
 
   });
 
-  // it ('should be able to remove nonces', () => {});
+  it ('should be able to remove nonces, returning them', () => {
+    let n1 = nonce.generate();
+
+    n2 = nonce.remove(n1);
+
+    expect(n1).toEqual(n2, 'removed nonce should be equal')
+    expect(nonce.compare(n1)).toEqual(false, 'nonce should be removed');
+  });
+
+  it ('should return false when removing something that does not exist', () => {
+    expect(nonce.remove(111111111111)).toEqual(false);
+  });
 
   // it ('should be able to peek at nonces without removing them', () => {});
 
