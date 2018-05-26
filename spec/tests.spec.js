@@ -40,6 +40,14 @@ describe('Nonce-next', () => {
 
   });
 
+  it ('should work with strings as well as numbers', () => {
+
+    let n = nonce.generate();
+    let sn = '' + n;
+
+    expect(nonce.compare(sn)).toEqual(true);
+  })
+
   it ('should remove nonces once compared', () => {
     let n = nonce.generate();
 
@@ -77,7 +85,7 @@ describe('Nonce-next', () => {
 
     setTimeout(() => {
       expect(nonce.peekCompare(n)).toEqual(false);
-      
+
       done();
     }, 750);
   });

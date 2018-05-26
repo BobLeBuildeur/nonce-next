@@ -11,29 +11,29 @@ module.exports = {
   cache: cache,
 
   generate: function(maxAge) {
-    let nonce = n();
+    let nonce = '' +  n();
     if (!!maxAge) {
-      cache.set(nonce, true, maxAge);
+      cache.set('' + nonce, true, maxAge);
     } else {
-      cache.set(nonce, true);
+      cache.set('' + nonce, true);
     }
     return nonce;
   },
 
   peekCompare: function(nonce) {
-    return !!cache.get(nonce);
+    return !!cache.get('' + nonce);
   },
 
   compare: function(nonce) {
-    let valid = !!cache.get(nonce);
-    if (valid) { cache.del(nonce); }
+    let valid = !!cache.get('' + nonce);
+    if (valid) { cache.del('' + nonce); }
     return valid;
   },
 
   remove: function(nonce) {
-    let valid = !!cache.get(nonce);
+    let valid = !!cache.get('' + nonce);
     if (!valid) { return false };
-    cache.del(nonce);
+    cache.del('' + nonce);
     return nonce;
   }
 };
