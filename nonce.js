@@ -16,6 +16,10 @@ module.exports = {
     return nonce;
   },
 
+  peekCompare: function(nonce) {
+    return !!cache.peek(nonce);
+  },
+
   compare: function(nonce) {
     let valid = !!cache.get(nonce);
     if (valid) { cache.del(nonce); }

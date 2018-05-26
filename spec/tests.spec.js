@@ -61,7 +61,14 @@ describe('Nonce-next', () => {
     expect(nonce.remove(111111111111)).toEqual(false);
   });
 
-  // it ('should be able to peek at nonces without removing them', () => {});
+  it ('should be able to peek at nonces without removing them', () => {
+    let n = nonce.generate();
+
+
+    expect(nonce.peekCompare(n)).toEqual(true);
+    expect(nonce.compare(n)).toEqual(true, 'should be true since peek does not remove nonce');
+
+  });
 
   // it ('should set an expiration date for nonces', () => {});
 
