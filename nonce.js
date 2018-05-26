@@ -14,5 +14,9 @@ module.exports = {
     let nonce = n();
     cache.set(nonce, true);
     return nonce;
+  },
+
+  compare: function(nonce) {
+    return !!cache.get(nonce);
   }
 };

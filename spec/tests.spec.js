@@ -30,7 +30,15 @@ describe('Nonce-next', () => {
     expect(nonce.cache.get(n)).toBeDefined();
   });
 
-  // it ('should compare nonces', () => {});
+  it ('should compare nonces', () => {
+
+    let n = nonce.generate();
+    let notn = 111111111111;
+
+    expect(nonce.compare(n)).toEqual(true);
+    expect(nonce.compare(notn)).toEqual(false);
+
+  });
 
   // it ('should remove nonces once compared', () => {});
 
