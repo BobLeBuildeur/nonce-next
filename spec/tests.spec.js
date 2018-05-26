@@ -70,9 +70,18 @@ describe('Nonce-next', () => {
 
   });
 
-  // it ('should set an expiration date for nonces', () => {});
+  it ('should set an expiration date for nonces, invalidade expired', done => {
+    let n = nonce.generate(500); // expires after 500ms
 
-  // it ('should invalidade expried nonces', () => {});
+    expect(nonce.peekCompare(n)).toEqual(true);
+
+    setTimeout(() => {
+      expect(nonce.peekCompare(n)).toEqual(false);
+      
+      done();
+    }, 750);
+  });
+
 
 
 });

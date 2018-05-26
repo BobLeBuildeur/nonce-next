@@ -10,14 +10,18 @@ let cache = LRU({
 module.exports = {
   cache: cache,
 
-  generate: function() {
+  generate: function(maxAge) {
     let nonce = n();
-    cache.set(nonce, true);
+    if (!!maxAge) {
+      cache.set(nonce, true, maxAge);
+    } else {
+      cache.set(nonce, true);
+    }
     return nonce;
   },
 
   peekCompare: function(nonce) {
-    return !!cache.peek(nonce);
+    return !!cache.get(nonce);
   },
 
   compare: function(nonce) {
