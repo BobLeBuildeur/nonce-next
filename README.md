@@ -74,26 +74,26 @@ route.post('/add', (req, res, next) => {
 
 ### Docs
 
-* `nonce.generate([maxAge=1000*60*60*24])`
+* `nn.generate([maxAge=1000*60*60*24])`
 
    Generates and saves persists a nonce to LRU memory store
 
    Optionally, set the expiration time which defaults to 1 day
 
-* `nonce.compare(nonce)`
+* `nn.compare(nonce)`
 
    Compares nonce, removing it from the store never to be used again!
 
-* `nonce.peekCompare(nonce)`
+* `nn.peekCompare(nonce)`
 
    Compares nonce without removing it from database.
 
-* `nonce.remove(nonce)`
+* `nn.remove(nonce)`
 
    Removes nonce from the store.
 
    Returns the removed nonce
 
-* `nonce.cache`
+* `nn.cache`
 
    The LRU cache object, to bet down, dirty and low level
