@@ -17,6 +17,8 @@ module.exports = {
   },
 
   compare: function(nonce) {
-    return !!cache.get(nonce);
+    let valid = !!cache.get(nonce);
+    if (valid) { cache.del(nonce); }
+    return valid;
   }
 };

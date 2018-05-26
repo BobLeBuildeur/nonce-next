@@ -40,7 +40,13 @@ describe('Nonce-next', () => {
 
   });
 
-  // it ('should remove nonces once compared', () => {});
+  it ('should remove nonces once compared', () => {
+    let n = nonce.generate();
+
+    expect(nonce.compare(n)).toEqual(true);
+    expect(nonce.compare(n)).toEqual(false, 'should remove nonce after first comparison');
+
+  });
 
   // it ('should be able to remove nonces', () => {});
 
