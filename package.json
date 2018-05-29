@@ -1,7 +1,7 @@
 {
   "name": "nonce-next",
   "version": "1.0.0",
-  "description": "",
+  "description": "Nonces for Node, Express, Connect.",
   "main": "nonce.js",
   "scripts": {
     "test": "node node_modules/jasmine/bin/jasmine"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/BobLeBuildeur/nonce-next.git"
   },
-  "author": "",
+  "author": "BobLeBuildeur <hello@eodesign.digital>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/BobLeBuildeur/nonce-next/issues"
