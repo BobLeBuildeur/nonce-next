@@ -1,6 +1,6 @@
 {
   "name": "nonce-next",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nonces for Node, Express, Connect.",
   "main": "nonce.js",
   "scripts": {
