@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/BobLeBuildeur/nonce-next#readme",
   "dependencies": {
-    "jasmine": "^3.1.0",
     "lru-cache": "^4.1.3",
     "nonce": "^1.0.4"
+  },
+  "devDependencies": {
+    "jasmine": "^3.1.0"
   }
 }
