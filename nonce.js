@@ -7,25 +7,55 @@ let cache = LRU({
 });
 
 
-module.exports = {
+let nn = {
   cache: cache,
 
-  generate: function(maxAge) {
+  generate: function(props) {
+
+    // exipiration
+    let maxAge = false;
+    if (!!props && typeof props == 'number') {
+      maxAge = props;
+    } else if (!!props && !!props.expires) {
+      maxAge = props.expires;
+    }
+
+    // scope
+    let scope = true;
+    if (!!props && !!props.scope) {
+      if (!Array.isArray(props.scope)) { props.scope = [props.scope]; }
+      scope = props.scope.join('');
+    }
+
+    // create nonce, set to cache
     let nonce = '' +  n();
-    if (!!maxAge) {
-      cache.set('' + nonce, true, maxAge);
+    if (maxAge) {
+      cache.set('' + nonce, scope, maxAge);
     } else {
-      cache.set('' + nonce, true);
+      cache.set('' + nonce, scope);
     }
     return nonce;
   },
 
-  peekCompare: function(nonce) {
-    return !!cache.get('' + nonce);
+  peekCompare: function(nonce, scope) {
+    let value = cache.get('' + nonce);
+
+    // compare against scope
+    if (typeof value == 'string') {
+      if (!!scope) {
+        if (!Array.isArray(scope)) { scope = [scope]; }
+        return value == scope.join('');
+      } else {
+        return false;
+      }
+    }
+
+    // compare against value
+    return !!value;
   },
 
   compare: function(nonce) {
-    let valid = !!cache.get('' + nonce);
+    let valid = nn.peekCompare(nonce);
     if (valid) { cache.del('' + nonce); }
     return valid;
   },
@@ -37,3 +67,5 @@ module.exports = {
     return nonce;
   }
 };
+
+module.exports = nn;

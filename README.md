@@ -2,6 +2,14 @@
 
 Real Nonce (Number used only once) for node.
 
+
+## Install
+
+
+```javascript
+npm install --save nonce-next
+```
+
 ## Getting Started
 
 Easy breezy:
@@ -70,30 +78,94 @@ route.post('/add', (req, res, next) => {
 </form>
 ```
 
+### Scoped nonces
 
+Scoped nonces are a way to add an extra layer of security and organize your code
+
+You can give your nonces one or more scopes, all of which must be present when compared:
+
+```javascript
+
+let n = nn.generate({
+  scope: 'A scope!'
+});
+
+nn.peekCompare(n);              // False!
+nn.peekCompare(n, 'A scope!');  // True!
+
+```
 
 ### Docs
 
-* `nn.generate([maxAge=1000*60*60*24])`
+#### `nn.generate([{Number} maxAge=1000*60*60*24 | {Object} props])`
 
-   Generates and saves persists a nonce to LRU memory store
+Generates and saves persists a nonce to LRU memory store
 
-   Optionally, set the expiration time which defaults to 1 day
+Can optionally receive a props object, or number specifying max age.
 
-* `nn.compare(nonce)`
+A number will set the nonce expiration in milliseconds.
 
-   Compares nonce, removing it from the store never to be used again!
+An object may contain any of the following properties:
 
-* `nn.peekCompare(nonce)`
+* `{Number} expires`
 
-   Compares nonce without removing it from database.
+  Expiration, does the same as passing a number directly
 
-* `nn.remove(nonce)`
+* `{String|String[]} scope`
 
-   Removes nonce from the store.
+  A string or array of strings which will scope the nonce
 
-   Returns the removed nonce
+Examples:
 
-* `nn.cache`
+```javascript
+nn.generate(60000);  	// will expire in a minute
 
-   The LRU cache object, to bet down, dirty and low level
+nn.generate({
+ expires: 60000,    	// expires in a minute
+ scope: 'api'       	// scoped to 'api'
+});
+
+nn.generate({
+ scope: ['api', 'file'] // scoped to 'api' and 'file'
+});
+```
+
+#### `nn.compare({Number} nonce[, {String|String[]} scope])`
+
+Compares nonce, removing it from the store never to be used again!
+
+May pass optional string of array of strings to check scope. Scope must match all strings.
+
+Example:
+
+```javascript
+let nonce1 = nn.generate({ scope: 'transaction' });
+
+nn.compare(nonce1);					// False
+nn.compare(nonce1, 'transaction'); 	// True
+
+
+let nonce2 = nn.generate({ scope: ['transaction', 'payment'] });
+
+nn.compare(nonce2);								// False
+nn.compare(nonce2, 'transaction'); 				// False
+nn.compare(nonce2, ['transaction', 'payment']);	// True
+```
+
+#### `nn.peekCompare({Number} nonce[, {String|String[]} scope])`
+
+Compares nonce without removing it from database.
+
+May pass optional string or array of strings to check scope. Scope must match all strings.
+
+See `nn.compare` for example
+
+#### `nn.remove({Number} nonce)`
+
+Removes nonce from the store.
+
+Returns the removed nonce
+
+#### `nn.cache`
+
+The LRU cache object, to bet down, dirty and low level

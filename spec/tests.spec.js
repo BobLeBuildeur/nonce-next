@@ -90,6 +90,41 @@ describe('Nonce-next', () => {
     }, 750);
   });
 
+  it ('should set an expiration from a properties object as well as a number', done => {
 
+      let n = nonce.generate({
+        expires: 500
+      });
+
+      expect(nonce.peekCompare(n)).toEqual(true);
+
+      setTimeout(() => {
+        expect(nonce.peekCompare(n)).toEqual(false);
+
+        done();
+      }, 750);
+  })
+
+  it ('should be able to be scoped with one or move values', () => {
+    let n1 = nonce.generate({
+      scope: 'a'
+    });
+
+    let n2 = nonce.generate({
+      scope: ['a', 'b']
+    });
+
+    // fail with no scope
+    expect(nonce.peekCompare(n1)).toEqual(false, 'No scope, expecting a');
+    expect(nonce.peekCompare(n2)).toEqual(false, 'No scope, expecting [a, b]');
+
+    // fail with wrong scope
+    expect(nonce.peekCompare(n1, 'b')).toEqual(false, 'Wrong scope, expecting a, supplied b');
+    expect(nonce.peekCompare(n2, 'a')).toEqual(false, 'Missing scope, expecting [a, b], supplied a');
+
+    // succeed
+    expect(nonce.peekCompare(n1, 'a')).toEqual(true);
+    expect(nonce.peekCompare(n2, ['a', 'b'])).toEqual(true);
+  })
 
 });
