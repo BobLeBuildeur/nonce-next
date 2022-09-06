@@ -1,25 +1,53 @@
 # _nn_: Nonce-Next
 
-Real Nonce (Number used only once) for node.
+~~Real~~ Super Awesome Nonce (**n**umber used only **once**) for node.
 
+🤘 Now in typescript! 🤘
 
-## Install
+## Table of Contents
+
+1. [Getting started](#install)
+1. [New and improved](#new-and-improved)
+1. [How it works](#how-it-works-and-what-for)
+1. Docs:
+    1. [API](#api)
+    1. [Joi validator](#joi-validator)
+    1. [Testing] (#testing)
+
+## Getting started
+
+### Install
 
 
 ```javascript
 npm install --save nonce-next
 ```
 
-## Getting Started
+### Import
 
-Easy breezy:
+
+
+```typescript
+  import nn from 'nonce-next';
+
+  // alternatively import individual features
+  import { generate, compare } from 'nonce-next';
+```
+
+or
 
 ```javascript
-let nn = require('nonce-next');
+  let nn = require('nonce-next');
+```
+
+### Go nuts!
+
+```javascript
 
 // Generate a nonce
 let nonce = nn.generate();
-console.log(nonce); // Something like 123456789123
+
+console.log(nonce); // Something like aTk49cE44jsGP
 
 // Validate
 console.log(nn.compare(nonce)); // True!
@@ -28,7 +56,26 @@ console.log(nn.compare(nonce)); // True!
 console.log(nn.compare(nonce)); // False!!!
 ```
 
-### How it works... And what for?
+## New and improved
+
+Version 1.2.0 moved to Typescript and includes a few creature conforts.
+
+💪 All the new goodies:
+
+* **Typescript!** Types and everything
+* **Joi integration** Built-in validation for Joi. [See how easy it is.](#joi-validator)
+
+💄 Some sexy improvements:
+
+* **NEARLY** backwards compatible. [See the only gotcha.](#nncache)
+* **More entropy** Moved from digits to base69, drastically reducing the chances of clashing nonces
+* **Reduced dependencies** Less npm installs to carry around 
+
+🐞 And pesky bug fixes:
+
+* `compare` actually checks scopes as its meant to.
+
+## How it works... And what for?
 
 _nn_ generates a different number every time it is called, based on your
 timestamp and an increasing counter.
@@ -63,14 +110,28 @@ route.post('/add', (req, res, next) => {
     res.send('Fail! - Invalid nonce');
   }
 
+  /* ----------------------- */
+
+  // or, if you are using joi
+  // after importing the custom validator
+
+  const schema = Joi.object({
+    nonce: Joi.custom(nonceValidator)
+  });
+
+  const { value, error } = Joi.validate(req.body);
+
+  if (error) res.send("Oops!");
+  
+  /* ----------------------- */
+
   res.send('OK! - Nonce is valid and message is: ', req.body.message);
 });
-
 ````
 
 `views/form.ejs`
 
-```ejs
+```html
 <form action="/add" method="post">
   <input type="hidden" name="nonce" value="<%= nonce %>">
   <input type="text" name="message">
@@ -85,33 +146,33 @@ Scoped nonces are a way to add an extra layer of security and organize your code
 You can give your nonces one or more scopes, all of which must be present when compared:
 
 ```javascript
-
 let n = nn.generate({
   scope: 'A scope!'
 });
 
 nn.peekCompare(n);              // False!
 nn.peekCompare(n, 'A scope!');  // True!
-
 ```
 
-### Docs
+## Docs
 
-#### `nn.generate([{Number} maxAge=1000*60*60*24 | {Object} props])`
+### API
 
-Generates and saves persists a nonce to LRU memory store
+#### `nn.generate(props?: number = 1000*60*60*24 | { expires?: number, scope?: string | string[] }): string`
 
-Can optionally receive a props object, or number specifying max age.
+Generates and saves persists a nonce to LRU memory store. Returns the nonce for future validation.
+
+Can optionally receive a props object, or number specifying max age:
 
 A number will set the nonce expiration in milliseconds.
 
-An object may contain any of the following properties:
+The props object may contain any of the following properties:
 
-* `{Number} expires`
+* `expires: number`
 
   Expiration, does the same as passing a number directly
 
-* `{String|String[]} scope`
+* `scope: string | string[]`
 
   A string or array of strings which will scope the nonce
 
@@ -130,7 +191,7 @@ nn.generate({
 });
 ```
 
-#### `nn.compare({Number} nonce[, {String|String[]} scope])`
+#### `nn.compare(nonce: string, scope: string | string[]): boolean`
 
 Compares nonce, removing it from the store never to be used again!
 
@@ -139,33 +200,91 @@ May pass optional string of array of strings to check scope. Scope must match al
 Example:
 
 ```javascript
-let nonce1 = nn.generate({ scope: 'transaction' });
+const nonce1 = nn.generate();
 
-nn.compare(nonce1);					// False
-nn.compare(nonce1, 'transaction'); 	// True
+nn.compare(nonce1); // True
+nn.compare(nonce1); // False, already used
+
+const nonce2 = nn.generate({ scope: 'transaction' });
+
+nn.compare(nonce2);					// False
+nn.compare(nonce2, 'transaction'); 	// True
 
 
-let nonce2 = nn.generate({ scope: ['transaction', 'payment'] });
+const nonce3 = nn.generate({ scope: ['transaction', 'payment'] });
 
-nn.compare(nonce2);								// False
-nn.compare(nonce2, 'transaction'); 				// False
-nn.compare(nonce2, ['transaction', 'payment']);	// True
+nn.compare(nonce3);								// False
+nn.compare(nonce3, 'transaction'); 				// False
+nn.compare(nonce3, ['transaction', 'payment']);	// True
 ```
 
-#### `nn.peekCompare({Number} nonce[, {String|String[]} scope])`
+#### `nn.peekCompare(nonce: string, scope?: string | string[]): boolean`
 
 Compares nonce without removing it from database.
 
 May pass optional string or array of strings to check scope. Scope must match all strings.
 
-See `nn.compare` for example
+**Note: this should probably not be used, since the idea of a nonce is being invalidated!**
 
-#### `nn.remove({Number} nonce)`
+See [nn.compare](#nncomparenonce-string-scope-string--string-boolean) for example
+
+```javascript
+const nonce = nn.generate();
+
+nn.peekCompare(nonce); // True
+nn.peekCompare(nonce); // Still true! Does not remove 
+```
+
+#### `nn.remove(nonce: string): string | false`
 
 Removes nonce from the store.
 
-Returns the removed nonce
+Returns the removed nonce key
 
-#### `nn.cache`
+#### `generateRandomString(length: number=15): string`
 
-The LRU cache object, to bet down, dirty and low level
+Generates a random string with `length` letters and numbers (base64 compliant).
+
+Available through the `nn` namespace for CommonJS modules.
+
+#### `cache: LRUCache`
+
+The LRU cache object, to get down, dirty and low level
+
+Available through the `nn` namespace for CommonJS modules.
+
+*NOTE: Version 1.2.0 updates this dependency. If you accessed accessed this property directly, be warry the changes are breaking.*
+
+### Joi validator
+
+Nonce-next comes with a joi validator, to make life a bit easier.
+
+It needs to be imported separately
+
+```typescript
+  import nonceValidator from 'nonce-next/joi';
+  // or
+  const nonceValidator = require('nonce-next/joi');
+```
+
+And can de used as a custom validator
+
+```typescript
+const n = nn.generate();
+
+const schema = Joi.custom(nonceValidator);
+
+const { value } = schema.validate(nn); // Hokey-dokey!
+
+const { error } = scehma.validate(nn); // Not valid! (already used)
+```
+
+Note: joi validator does not offer custom messages
+
+### Testing
+
+There are a few tesing options
+
+* `npm run test` tests all the current versions features
+* `npm run test:legacy` tests backwards compatibility; Needs to be built before testing
+* `npm run test:full` runs all tests; Needs to be built before testing
