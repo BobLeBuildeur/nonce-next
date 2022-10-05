@@ -12,7 +12,7 @@
 1. Docs:
     1. [API](#api)
     1. [Joi validator](#joi-validator)
-    1. [Testing] (#testing)
+    1. [Testing](#testing)
 
 ## Getting started
 
